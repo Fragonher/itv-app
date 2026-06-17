@@ -23,6 +23,7 @@ public class VehiculoController {
 
     private static final Pattern MATRICULA_ACTUAL = Pattern.compile("^\\d{4}[A-Z]{3}$");
     private static final Pattern MATRICULA_ANTIGUA = Pattern.compile("^[A-Z]{1,2}\\d{4}[A-Z]{1,2}$");
+    private static final Pattern MATRICULA_REMOLQUE = Pattern.compile("^R\\d{4}[A-Z]{3}$");
 
     private final VehiculoRepository vehiculoRepository;
 
@@ -149,7 +150,7 @@ public class VehiculoController {
         String matriculaNormalizada = normalizarMatricula(vehiculo.getMatricula());
 
         if (!matriculaValida(matriculaNormalizada)) {
-            throw new ResponseStatusException(BAD_REQUEST, "Formato de matricula no valido. Usa 1234ABC o MU1234AB");
+            throw new ResponseStatusException(BAD_REQUEST, "Formato de matricula no valido. Usa 1234ABC, MU1234AB o R1732BDB");
         }
 
         boolean duplicada = vehiculoRepository.findAll().stream()
@@ -171,6 +172,7 @@ public class VehiculoController {
 
     private boolean matriculaValida(String matricula) {
         return MATRICULA_ACTUAL.matcher(matricula).matches()
-                || MATRICULA_ANTIGUA.matcher(matricula).matches();
+                || MATRICULA_ANTIGUA.matcher(matricula).matches()
+                || MATRICULA_REMOLQUE.matcher(matricula).matches();
     }
 }

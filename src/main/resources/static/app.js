@@ -1,6 +1,7 @@
 const API_URL = "/api/vehiculos";
 const MATRICULA_ACTUAL = /^\d{4}[A-Z]{3}$/;
 const MATRICULA_ANTIGUA = /^[A-Z]{1,2}\d{4}[A-Z]{1,2}$/;
+const MATRICULA_REMOLQUE = /^R\d{4}[A-Z]{3}$/;
 let vehiculoEditandoId = null;
 let vehiculoPasandoItvId = null;
 let vehiculosCargados = [];
@@ -13,7 +14,7 @@ document.getElementById("formVehiculo").addEventListener("submit", async functio
     const matriculaNormalizada = normalizarMatricula(document.getElementById("matricula").value);
 
     if (!matriculaValida(matriculaNormalizada)) {
-        mostrarMensajeFormulario("Formato de matr&iacute;cula no v&aacute;lido. Usa 1234ABC o MU1234AB.", true);
+        mostrarMensajeFormulario("Formato de matr&iacute;cula no v&aacute;lido. Usa 1234ABC, MU1234AB o R1732BDB.", true);
         return;
     }
 
@@ -116,7 +117,8 @@ async function cargarVehiculos() {
     }
 
     actualizarResumen();
-    filtrarVehiculosPorMatricula();
+    document.getElementById("buscarMatricula").value = "";
+    aplicarFiltroResumen("total");
 }
 
 function mostrarVehiculos(vehiculos) {
@@ -230,7 +232,9 @@ function normalizarMatricula(valor) {
 }
 
 function matriculaValida(matricula) {
-    return MATRICULA_ACTUAL.test(matricula) || MATRICULA_ANTIGUA.test(matricula);
+    return MATRICULA_ACTUAL.test(matricula)
+        || MATRICULA_ANTIGUA.test(matricula)
+        || MATRICULA_REMOLQUE.test(matricula);
 }
 
 function calcularDiasItv(fechaProximaItv) {
