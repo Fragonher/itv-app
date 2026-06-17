@@ -104,6 +104,42 @@ public class VehiculoController {
                 .body(vehiculo.getDocumentoItv());
     }
 
+    @PostMapping("/{id}/foto")
+    public Vehiculo subirFoto(@PathVariable Long id, @RequestParam("foto") MultipartFile foto) throws IOException {
+        Vehiculo vehiculo = vehiculoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Vehiculo no encontrado"));
+
+        if (foto.isEmpty()) {
+            throw new ResponseStatusException(BAD_REQUEST, "La foto no puede estar vacia");
+        }
+
+        String tipo = foto.getContentType();
+
+        if (tipo == null || !tipo.startsWith("image/")) {
+            throw new ResponseStatusException(BAD_REQUEST, "Solo se permiten imagenes");
+        }
+
+        vehiculo.setFotoVehiculoNombre(foto.getOriginalFilename());
+        vehiculo.setFotoVehiculoTipo(tipo);
+        vehiculo.setFotoVehiculo(foto.getBytes());
+
+        return vehiculoRepository.save(vehiculo);
+    }
+
+    @GetMapping("/{id}/foto")
+    public ResponseEntity<byte[]> verFoto(@PathVariable Long id) {
+        Vehiculo vehiculo = vehiculoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Vehiculo no encontrado"));
+
+        if (vehiculo.getFotoVehiculo() == null) {
+            throw new ResponseStatusException(NOT_FOUND, "Foto no encontrada");
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(vehiculo.getFotoVehiculoTipo()))
+                .body(vehiculo.getFotoVehiculo());
+    }
+
     @DeleteMapping("/{id}")
     public void borrar(@PathVariable Long id) {
         vehiculoRepository.deleteById(id);

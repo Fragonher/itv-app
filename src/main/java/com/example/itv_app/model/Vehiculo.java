@@ -22,10 +22,16 @@ public class Vehiculo {
     private LocalDate fechaProximaItv;
     private String documentoItvNombre;
     private String documentoItvTipo;
+    private String fotoVehiculoNombre;
+    private String fotoVehiculoTipo;
 
     @Lob
     @JsonIgnore
     private byte[] documentoItv;
+
+    @Lob
+    @JsonIgnore
+    private byte[] fotoVehiculo;
 
     @OneToMany(mappedBy = "vehiculo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @OrderBy("fechaItv DESC")
@@ -59,6 +65,15 @@ public class Vehiculo {
 
     public byte[] getDocumentoItv() { return documentoItv; }
     public void setDocumentoItv(byte[] documentoItv) { this.documentoItv = documentoItv; }
+
+    public String getFotoVehiculoNombre() { return fotoVehiculoNombre; }
+    public void setFotoVehiculoNombre(String fotoVehiculoNombre) { this.fotoVehiculoNombre = fotoVehiculoNombre; }
+
+    public String getFotoVehiculoTipo() { return fotoVehiculoTipo; }
+    public void setFotoVehiculoTipo(String fotoVehiculoTipo) { this.fotoVehiculoTipo = fotoVehiculoTipo; }
+
+    public byte[] getFotoVehiculo() { return fotoVehiculo; }
+    public void setFotoVehiculo(byte[] fotoVehiculo) { this.fotoVehiculo = fotoVehiculo; }
 
     public List<HistorialItv> getHistorialItv() { return historialItv; }
     public void setHistorialItv(List<HistorialItv> historialItv) { this.historialItv = historialItv; }

@@ -321,6 +321,15 @@ input:focus {
     background: var(--primario-hover);
 }
 
+.btn.archivo.secundario-archivo {
+    color: var(--primario);
+    background: #e6f4f1;
+}
+
+.btn.archivo.secundario-archivo:hover {
+    background: #d3ebe7;
+}
+
 .nombre-archivo {
     font-size: 0.82rem;
     font-weight: 600;
@@ -363,6 +372,21 @@ input:focus {
     cursor: pointer;
     box-shadow: 0 10px 24px rgba(25, 35, 60, 0.07);
     transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.foto-vehiculo {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #edf1f7;
+}
+
+.foto-vehiculo.sin-foto {
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    font-weight: 800;
 }
 
 .tarjeta-vehiculo:hover {
@@ -538,6 +562,14 @@ input:focus {
     gap: 16px;
     align-items: flex-start;
     margin-bottom: 18px;
+}
+
+.foto-detalle {
+    margin-bottom: 16px;
+}
+
+.foto-detalle .foto-vehiculo {
+    max-height: 320px;
 }
 
 .detalle-grid {

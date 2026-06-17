@@ -52,11 +52,20 @@ document.getElementById("formVehiculo").addEventListener("submit", async functio
 
     const vehiculoGuardado = await respuesta.json();
     const documento = document.getElementById("documentoItv").files[0];
+    const foto = document.getElementById("fotoVehiculo").files[0];
 
     if (documento) {
         const documentoSubido = await subirDocumentoItv(vehiculoGuardado.id, documento);
 
         if (!documentoSubido) {
+            return;
+        }
+    }
+
+    if (foto) {
+        const fotoSubida = await subirFotoVehiculo(vehiculoGuardado.id, foto);
+
+        if (!fotoSubida) {
             return;
         }
     }
@@ -70,6 +79,7 @@ registrarEvento("buscarMatricula", "input", filtrarVehiculosPorMatricula);
 registrarEvento("btnBuscarMatricula", "click", filtrarVehiculosPorMatricula);
 registrarEvento("btnLimpiarBusqueda", "click", limpiarBusqueda);
 registrarEvento("documentoItv", "change", actualizarNombreDocumento);
+registrarEvento("fotoVehiculo", "change", actualizarNombreFoto);
 registrarEvento("btnCerrarPasarItv", "click", cerrarModalPasarItv);
 registrarEvento("btnCerrarDetalleVehiculo", "click", cerrarDetalleVehiculo);
 document.querySelectorAll(".tarjeta-resumen[data-filtro]").forEach(tarjeta => {
@@ -125,6 +135,7 @@ function mostrarVehiculos(vehiculos) {
         tarjeta.type = "button";
         tarjeta.className = `tarjeta-vehiculo ${diasItv.clase}`;
         tarjeta.innerHTML = `
+            ${crearFotoVehiculo(v)}
             <span class="matricula">${v.matricula}</span>
             <span class="modelo-tarjeta">${v.marca || ""} ${v.modelo || "-"}</span>
             <span class="estado ${diasItv.clase}">${diasItv.estado}</span>
@@ -300,6 +311,14 @@ function crearEnlaceDocumento(vehiculo) {
     return `<a class="enlace-documento" href="${API_URL}/${vehiculo.id}/documento" target="_blank" rel="noopener">Ver documento</a>`;
 }
 
+function crearFotoVehiculo(vehiculo) {
+    if (!vehiculo.fotoVehiculoNombre) {
+        return `<span class="foto-vehiculo sin-foto">Sin foto</span>`;
+    }
+
+    return `<img class="foto-vehiculo" src="${API_URL}/${vehiculo.id}/foto" alt="Foto de ${vehiculo.matricula}">`;
+}
+
 function crearHistorialItv(historial) {
     if (!historial || historial.length === 0) {
         return `<div class="historial-itv"><strong>Historial ITV</strong><span class="texto-suave">Sin historial registrado</span></div>`;
@@ -326,6 +345,9 @@ function abrirDetalleVehiculo(vehiculo) {
     document.getElementById("tituloDetalleVehiculo").textContent = vehiculo.matricula;
     document.getElementById("subtituloDetalleVehiculo").textContent = `${vehiculo.marca || ""} ${vehiculo.modelo || ""}`.trim();
     document.getElementById("contenidoDetalleVehiculo").innerHTML = `
+        <div class="foto-detalle">
+            ${crearFotoVehiculo(vehiculo)}
+        </div>
         <div class="detalle-grid">
             <div>
                 <span class="detalle-label">&Uacute;ltima ITV</span>
@@ -395,7 +417,9 @@ function editarVehiculo(vehiculo) {
     document.getElementById("fechaUltimaItv").value = vehiculo.fechaUltimaItv;
     document.getElementById("fechaProximaItv").value = vehiculo.fechaProximaItv;
     document.getElementById("documentoItv").value = "";
+    document.getElementById("fotoVehiculo").value = "";
     actualizarNombreDocumento();
+    actualizarNombreFoto();
     document.getElementById("btnGuardar").innerHTML = `<img src="assets/crearvehiculo.png" alt="" class="icono-boton">Actualizar veh&iacute;culo`;
 }
 
@@ -404,6 +428,7 @@ function limpiarFormulario() {
 
     document.getElementById("formVehiculo").reset();
     actualizarNombreDocumento();
+    actualizarNombreFoto();
     document.getElementById("btnGuardar").innerHTML = `<img src="assets/crearvehiculo.png" alt="" class="icono-boton">Crear veh&iacute;culo`;
     document.getElementById("panelCrearVehiculo").classList.add("oculto");
     ocultarMensajeFormulario();
@@ -473,11 +498,35 @@ function actualizarNombreDocumento() {
         : "Ning\u00fan archivo seleccionado";
 }
 
+function actualizarNombreFoto() {
+    const foto = document.getElementById("fotoVehiculo").files[0];
+    document.getElementById("nombreFotoVehiculo").textContent = foto
+        ? foto.name
+        : "Ninguna foto seleccionada";
+}
+
 async function subirDocumentoItv(vehiculoId, documento) {
     const datos = new FormData();
     datos.append("documento", documento);
 
     const respuesta = await fetch(`${API_URL}/${vehiculoId}/documento`, {
+        method: "POST",
+        body: datos
+    });
+
+    if (!respuesta.ok) {
+        mostrarMensajeFormulario(await obtenerMensajeError(respuesta), true);
+        return false;
+    }
+
+    return true;
+}
+
+async function subirFotoVehiculo(vehiculoId, foto) {
+    const datos = new FormData();
+    datos.append("foto", foto);
+
+    const respuesta = await fetch(`${API_URL}/${vehiculoId}/foto`, {
         method: "POST",
         body: datos
     });
