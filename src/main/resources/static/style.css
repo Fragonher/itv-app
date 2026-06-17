@@ -41,6 +41,13 @@ body {
     margin-bottom: 22px;
 }
 
+.acciones-cabecera {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
 .etiqueta {
     margin: 0 0 6px;
     color: var(--primario);
@@ -426,6 +433,38 @@ tbody tr:hover {
     background: var(--peligro-fondo);
 }
 
+.login-body {
+    display: grid;
+    place-items: center;
+    padding: 20px;
+}
+
+.login-panel {
+    width: min(420px, 100%);
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    padding: 26px;
+    background: #ffffff;
+    box-shadow: var(--sombra);
+}
+
+.login-logo {
+    display: block;
+    width: 150px;
+    height: auto;
+    margin: 0 auto 18px;
+}
+
+.login-panel h1 {
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+.login-form {
+    display: grid;
+    gap: 14px;
+}
+
 .modal {
     position: fixed;
     inset: 0;
@@ -531,6 +570,10 @@ tbody tr:hover {
     .encabezado-listado {
         align-items: stretch;
         flex-direction: column;
+    }
+
+    .acciones-cabecera {
+        justify-content: stretch;
     }
 
     .resumen,

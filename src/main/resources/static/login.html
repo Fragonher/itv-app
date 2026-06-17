@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0f766e">
+    <title>Acceso ITV</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="assets/iconoapp.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-body">
+<main class="login-panel">
+    <img src="assets/iconoapp.png" alt="Angel Guerrero Transportes" class="login-logo">
+    <h1>Acceso ITV</h1>
+    <form id="formLogin" class="login-form">
+        <label>
+            Usuario
+            <input type="text" id="usuario" autocomplete="username" required>
+        </label>
+        <label>
+            Contrase&ntilde;a
+            <input type="password" id="password" autocomplete="current-password" required>
+        </label>
+        <button type="submit" class="btn primario">Entrar</button>
+    </form>
+    <p id="mensajeLogin" class="mensaje-formulario error oculto"></p>
+</main>
+
+<script src="login.js"></script>
+</body>
+</html>

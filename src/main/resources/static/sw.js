@@ -1,7 +1,7 @@
-const CACHE_NAME = "itv-pwa-v9";
+const CACHE_NAME = "itv-pwa-v10";
 const APP_SHELL = [
-    "/",
-    "/index.html",
+    "/login.html",
+    "/login.js",
     "/style.css",
     "/app.js",
     "/manifest.webmanifest",
@@ -46,6 +46,11 @@ self.addEventListener("fetch", event => {
 
     if (url.pathname.startsWith("/api/")) {
         event.respondWith(networkFirst(request));
+        return;
+    }
+
+    if (request.mode === "navigate") {
+        event.respondWith(fetch(request));
         return;
     }
 

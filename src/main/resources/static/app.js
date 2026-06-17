@@ -66,6 +66,7 @@ document.getElementById("formVehiculo").addEventListener("submit", async functio
 
 document.getElementById("btnCancelar").addEventListener("click", limpiarFormulario);
 document.getElementById("btnAbrirFormulario").addEventListener("click", abrirFormulario);
+document.getElementById("btnCerrarSesion").addEventListener("click", cerrarSesion);
 document.getElementById("buscarMatricula").addEventListener("input", filtrarVehiculosPorMatricula);
 document.getElementById("btnBuscarMatricula").addEventListener("click", filtrarVehiculosPorMatricula);
 document.getElementById("btnLimpiarBusqueda").addEventListener("click", limpiarBusqueda);
@@ -454,10 +455,30 @@ async function borrarVehiculo(vehiculo) {
     cargarVehiculos();
 }
 
-cargarVehiculos();
+iniciarApp();
 
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker.register("/sw.js");
     });
+}
+
+async function iniciarApp() {
+    const respuesta = await fetch("/api/session");
+    const sesion = await respuesta.json();
+
+    if (!sesion.autenticado) {
+        window.location.href = "/login.html";
+        return;
+    }
+
+    cargarVehiculos();
+}
+
+async function cerrarSesion() {
+    await fetch("/api/logout", {
+        method: "POST"
+    });
+
+    window.location.href = "/login.html";
 }

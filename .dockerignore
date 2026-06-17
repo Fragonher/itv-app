@@ -1,0 +1,7 @@
+target/
+bin/
+itv-app/
+.git/
+.idea/
+.vscode/
+*.log
