@@ -1,4 +1,4 @@
-const CACHE_NAME = "itv-pwa-v11";
+const CACHE_NAME = "itv-pwa-v12";
 const APP_SHELL = [
     "/login.html",
     "/login.js",
@@ -6,6 +6,13 @@ const APP_SHELL = [
     "/app.js",
     "/manifest.webmanifest",
     "/assets/apple-touch-icon.png",
+    "/assets/icon-32.png",
+    "/assets/icon-48.png",
+    "/assets/icon-72.png",
+    "/assets/icon-96.png",
+    "/assets/icon-144.png",
+    "/assets/icon-192.png",
+    "/assets/icon-512.png",
     "/assets/iconoapp.png",
     "/assets/iconoapp-192.png",
     "/assets/fotos.png",

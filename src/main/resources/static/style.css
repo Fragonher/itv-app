@@ -25,6 +25,7 @@ body {
     font-family: Arial, sans-serif;
     color: var(--texto);
     background: var(--fondo);
+    overflow-x: hidden;
 }
 
 .contenedor {
@@ -180,6 +181,7 @@ input:focus {
     font: inherit;
     font-weight: 700;
     cursor: pointer;
+    white-space: nowrap;
     transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
 
@@ -480,6 +482,8 @@ tbody tr:hover {
 }
 
 .modal-contenido {
+    max-height: calc(100vh - 36px);
+    overflow-y: auto;
     width: min(440px, 100%);
     border: 1px solid var(--borde);
     border-radius: 8px;
@@ -561,9 +565,13 @@ tbody tr:hover {
 }
 
 @media (max-width: 680px) {
+    body {
+        min-height: 100dvh;
+    }
+
     .contenedor {
-        width: min(100% - 20px, 1180px);
-        padding-top: 18px;
+        width: 100%;
+        padding: max(14px, env(safe-area-inset-top)) 10px max(28px, env(safe-area-inset-bottom));
     }
 
     .cabecera,
@@ -576,14 +584,26 @@ tbody tr:hover {
         justify-content: stretch;
     }
 
-    .resumen,
     .formulario {
         grid-template-columns: 1fr;
     }
 
+    .resumen {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
     .panel,
     .tarjeta-resumen {
-        padding: 16px;
+        padding: 14px;
+    }
+
+    .tarjeta-resumen strong {
+        font-size: 1.55rem;
+    }
+
+    .tarjeta-resumen span {
+        font-size: 0.78rem;
     }
 
     .barra-busqueda,
@@ -597,6 +617,11 @@ tbody tr:hover {
     .btn,
     .acciones-tabla {
         width: 100%;
+    }
+
+    .btn {
+        min-height: 46px;
+        white-space: normal;
     }
 
     .tabla-contenedor {
@@ -636,15 +661,17 @@ tbody tr:hover {
     td {
         display: flex;
         justify-content: space-between;
+        align-items: flex-start;
         gap: 14px;
         padding: 12px 14px;
         border-bottom: 1px solid var(--borde);
         text-align: right;
+        overflow-wrap: anywhere;
     }
 
     td::before {
         content: attr(data-label);
-        flex: 0 0 auto;
+        flex: 0 0 42%;
         color: var(--muted);
         font-weight: 700;
         text-align: left;
@@ -689,5 +716,48 @@ tbody tr:hover {
 
     .acciones-modal .btn {
         width: 100%;
+    }
+
+    .login-body {
+        min-height: 100dvh;
+        padding: max(18px, env(safe-area-inset-top)) 12px max(18px, env(safe-area-inset-bottom));
+    }
+
+    .login-panel {
+        padding: 18px;
+    }
+
+    .login-logo {
+        width: min(150px, 70vw);
+    }
+}
+
+@media (max-width: 390px) {
+    h1 {
+        font-size: 1.55rem;
+    }
+
+    .resumen {
+        grid-template-columns: 1fr;
+    }
+
+    .tarjeta-resumen {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .tarjeta-resumen strong {
+        margin-top: 0;
+    }
+
+    td {
+        flex-direction: column;
+        text-align: left;
+    }
+
+    td::before {
+        flex: none;
     }
 }
