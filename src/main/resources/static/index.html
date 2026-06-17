@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0f766e">
+    <title>Control ITV</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="assets/iconoapp.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main class="contenedor">
+    <header class="cabecera">
+        <div>
+            <p class="etiqueta">Panel ITV</p>
+            <h1>Control ITV Veh&iacute;culos</h1>
+        </div>
+        <button type="button" id="btnAbrirFormulario" class="btn primario">
+            <img src="assets/crearvehiculo.png" alt="" class="icono-boton">
+            Crear veh&iacute;culo
+        </button>
+    </header>
+
+    <section class="resumen" aria-label="Resumen ITV">
+        <article class="tarjeta-resumen">
+            <span>Total veh&iacute;culos</span>
+            <strong id="totalVehiculos">0</strong>
+        </article>
+        <article class="tarjeta-resumen alerta">
+            <span>ITV caducadas</span>
+            <strong id="itvCaducadas">0</strong>
+        </article>
+        <article class="tarjeta-resumen aviso">
+            <span>ITV pr&oacute;ximas</span>
+            <strong id="itvProximas">0</strong>
+        </article>
+        <article class="tarjeta-resumen ok">
+            <span>ITV correctas</span>
+            <strong id="itvCorrectas">0</strong>
+        </article>
+    </section>
+
+    <section class="panel oculto" id="panelCrearVehiculo">
+        <h2>Nuevo veh&iacute;culo</h2>
+        <form id="formVehiculo" class="formulario">
+            <label>
+                Matr&iacute;cula
+                <input type="text" id="matricula" placeholder="1234 ABC" required>
+            </label>
+            <label>
+                Marca
+                <input type="text" id="marca" placeholder="Renault" required>
+            </label>
+            <label>
+                Modelo
+                <input type="text" id="modelo" placeholder="Master" required>
+            </label>
+            <label>
+                &Uacute;ltima ITV
+                <input type="date" id="fechaUltimaItv" required>
+            </label>
+            <label>
+                Pr&oacute;xima ITV
+                <input type="date" id="fechaProximaItv" required>
+            </label>
+            <label class="campo-archivo">
+                Documento ITV
+                <input type="file" id="documentoItv" accept="application/pdf,image/*">
+                <span class="btn archivo">
+                    <img src="assets/fotos.png" alt="" class="icono-boton">
+                    Guardar ITV
+                </span>
+                <span id="nombreDocumentoItv" class="texto-suave nombre-archivo">Ning&uacute;n archivo seleccionado</span>
+            </label>
+            <div class="acciones-formulario">
+                <button type="submit" id="btnGuardar" class="btn primario">
+                    <img src="assets/crearvehiculo.png" alt="" class="icono-boton">
+                    Crear veh&iacute;culo
+                </button>
+                <button type="button" id="btnCancelar" class="btn secundario">Cancelar</button>
+            </div>
+        </form>
+        <p id="mensajeFormulario" class="mensaje-formulario oculto"></p>
+    </section>
+
+    <section class="panel">
+        <div class="encabezado-listado">
+            <h2>Veh&iacute;culos</h2>
+            <div class="barra-busqueda">
+                <input type="search" id="buscarMatricula" placeholder="Buscar por matr&iacute;cula">
+                <button type="button" id="btnBuscarMatricula" class="btn buscar">
+                    <img src="assets/buscar.png" alt="" class="icono-boton">
+                    Buscar
+                </button>
+                <button type="button" id="btnLimpiarBusqueda" class="btn fantasma oculto">Limpiar</button>
+            </div>
+        </div>
+
+        <div class="tabla-contenedor">
+            <table>
+                <thead>
+                <tr>
+                    <th>Matr&iacute;cula</th>
+                    <th>Veh&iacute;culo</th>
+                    <th>&Uacute;ltima ITV</th>
+                    <th>Pr&oacute;xima ITV</th>
+                    <th>D&iacute;as restantes</th>
+                    <th>Estado</th>
+                    <th>Documento</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody id="tablaVehiculos"></tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<div id="modalPasarItv" class="modal oculto" role="dialog" aria-modal="true" aria-labelledby="tituloPasarItv">
+    <div class="modal-contenido">
+        <h2 id="tituloPasarItv">Pasar ITV</h2>
+        <p id="matriculaPasarItv" class="texto-suave"></p>
+        <form id="formPasarItv" class="formulario-modal">
+            <label>
+                Fecha ITV
+                <input type="date" id="fechaPasarItv" required>
+            </label>
+            <label>
+                Pr&oacute;xima ITV
+                <input type="date" id="fechaSiguienteItv" required>
+            </label>
+            <div class="acciones-modal">
+                <button type="submit" class="btn confirmar-itv">
+                    <img src="assets/itv.png" alt="" class="icono-boton">
+                    Pasar ITV
+                </button>
+                <button type="button" id="btnCerrarPasarItv" class="btn cancelar-modal">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+    "name": "Control ITV Vehiculos",
+    "short_name": "ITV",
+    "description": "Gestion de vehiculos y fechas de ITV.",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#0f766e",
+    "icons": [
+        {
+            "src": "assets/iconoapp-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "assets/iconoapp.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+}
