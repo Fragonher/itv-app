@@ -1,4 +1,4 @@
-const CACHE_NAME = "itv-pwa-v12";
+const CACHE_NAME = "itv-pwa-v13";
 const APP_SHELL = [
     "/login.html",
     "/login.js",

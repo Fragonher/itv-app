@@ -64,20 +64,26 @@ document.getElementById("formVehiculo").addEventListener("submit", async functio
     cargarVehiculos();
 });
 
-document.getElementById("btnCancelar").addEventListener("click", limpiarFormulario);
-document.getElementById("btnAbrirFormulario").addEventListener("click", abrirFormulario);
-document.getElementById("btnCerrarSesion").addEventListener("click", cerrarSesion);
-document.getElementById("buscarMatricula").addEventListener("input", filtrarVehiculosPorMatricula);
-document.getElementById("btnBuscarMatricula").addEventListener("click", filtrarVehiculosPorMatricula);
-document.getElementById("btnLimpiarBusqueda").addEventListener("click", limpiarBusqueda);
-document.getElementById("documentoItv").addEventListener("change", actualizarNombreDocumento);
-document.getElementById("btnCerrarPasarItv").addEventListener("click", cerrarModalPasarItv);
+registrarEvento("btnCancelar", "click", limpiarFormulario);
+registrarEvento("buscarMatricula", "input", filtrarVehiculosPorMatricula);
+registrarEvento("btnBuscarMatricula", "click", filtrarVehiculosPorMatricula);
+registrarEvento("btnLimpiarBusqueda", "click", limpiarBusqueda);
+registrarEvento("documentoItv", "change", actualizarNombreDocumento);
+registrarEvento("btnCerrarPasarItv", "click", cerrarModalPasarItv);
 document.getElementById("modalPasarItv").addEventListener("click", function (e) {
     if (e.target === this) {
         cerrarModalPasarItv();
     }
 });
 document.getElementById("formPasarItv").addEventListener("submit", guardarPasoItv);
+
+function registrarEvento(id, evento, manejador) {
+    const elemento = document.getElementById(id);
+
+    if (elemento) {
+        elemento.addEventListener(evento, manejador);
+    }
+}
 
 async function cargarVehiculos() {
     try {
@@ -338,6 +344,8 @@ function abrirFormulario() {
     document.getElementById("matricula").focus();
 }
 
+window.abrirFormulario = abrirFormulario;
+
 function abrirModalPasarItv(vehiculo) {
     vehiculoPasandoItvId = vehiculo.id;
     document.getElementById("matriculaPasarItv").textContent = `${vehiculo.matricula} - ${vehiculo.marca || ""} ${vehiculo.modelo || ""}`.trim();
@@ -482,3 +490,5 @@ async function cerrarSesion() {
 
     window.location.href = "/login.html";
 }
+
+window.cerrarSesion = cerrarSesion;
