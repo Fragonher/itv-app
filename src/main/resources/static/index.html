@@ -29,19 +29,19 @@
     </header>
 
     <section class="resumen" aria-label="Resumen ITV">
-        <article class="tarjeta-resumen">
+        <article class="tarjeta-resumen filtro-activo" data-filtro="total">
             <span>Total veh&iacute;culos</span>
             <strong id="totalVehiculos">0</strong>
         </article>
-        <article class="tarjeta-resumen alerta">
+        <article class="tarjeta-resumen alerta" data-filtro="caducada">
             <span>ITV caducadas</span>
             <strong id="itvCaducadas">0</strong>
         </article>
-        <article class="tarjeta-resumen aviso">
+        <article class="tarjeta-resumen aviso" data-filtro="proxima">
             <span>ITV pr&oacute;ximas</span>
             <strong id="itvProximas">0</strong>
         </article>
-        <article class="tarjeta-resumen ok">
+        <article class="tarjeta-resumen ok" data-filtro="correcta">
             <span>ITV correctas</span>
             <strong id="itvCorrectas">0</strong>
         </article>
@@ -103,25 +103,23 @@
             </div>
         </div>
 
-        <div class="tabla-contenedor">
-            <table>
-                <thead>
-                <tr>
-                    <th>Matr&iacute;cula</th>
-                    <th>Veh&iacute;culo</th>
-                    <th>&Uacute;ltima ITV</th>
-                    <th>Pr&oacute;xima ITV</th>
-                    <th>D&iacute;as restantes</th>
-                    <th>Estado</th>
-                    <th>Documento</th>
-                    <th>Acciones</th>
-                </tr>
-                </thead>
-                <tbody id="tablaVehiculos"></tbody>
-            </table>
-        </div>
+        <div id="tarjetasVehiculos" class="tarjetas-vehiculos"></div>
     </section>
 </main>
+
+<div id="modalDetalleVehiculo" class="modal oculto" role="dialog" aria-modal="true" aria-labelledby="tituloDetalleVehiculo">
+    <div class="modal-contenido modal-detalle">
+        <div class="detalle-cabecera">
+            <div>
+                <p class="etiqueta">Detalle veh&iacute;culo</p>
+                <h2 id="tituloDetalleVehiculo"></h2>
+                <p id="subtituloDetalleVehiculo" class="texto-suave"></p>
+            </div>
+            <button type="button" id="btnCerrarDetalleVehiculo" class="btn fantasma">Cerrar</button>
+        </div>
+        <div id="contenidoDetalleVehiculo"></div>
+    </div>
+</div>
 
 <div id="modalPasarItv" class="modal oculto" role="dialog" aria-modal="true" aria-labelledby="tituloPasarItv">
     <div class="modal-contenido">

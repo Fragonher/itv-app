@@ -4,6 +4,7 @@ const MATRICULA_ANTIGUA = /^[A-Z]{1,2}\d{4}[A-Z]{1,2}$/;
 let vehiculoEditandoId = null;
 let vehiculoPasandoItvId = null;
 let vehiculosCargados = [];
+let filtroResumenActivo = "total";
 
 document.getElementById("formVehiculo").addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -70,9 +71,18 @@ registrarEvento("btnBuscarMatricula", "click", filtrarVehiculosPorMatricula);
 registrarEvento("btnLimpiarBusqueda", "click", limpiarBusqueda);
 registrarEvento("documentoItv", "change", actualizarNombreDocumento);
 registrarEvento("btnCerrarPasarItv", "click", cerrarModalPasarItv);
+registrarEvento("btnCerrarDetalleVehiculo", "click", cerrarDetalleVehiculo);
+document.querySelectorAll(".tarjeta-resumen[data-filtro]").forEach(tarjeta => {
+    tarjeta.addEventListener("click", () => aplicarFiltroResumen(tarjeta.dataset.filtro));
+});
 document.getElementById("modalPasarItv").addEventListener("click", function (e) {
     if (e.target === this) {
         cerrarModalPasarItv();
+    }
+});
+document.getElementById("modalDetalleVehiculo").addEventListener("click", function (e) {
+    if (e.target === this) {
+        cerrarDetalleVehiculo();
     }
 });
 document.getElementById("formPasarItv").addEventListener("submit", guardarPasoItv);
@@ -100,69 +110,33 @@ async function cargarVehiculos() {
 }
 
 function mostrarVehiculos(vehiculos) {
-    const tabla = document.getElementById("tablaVehiculos");
-    tabla.innerHTML = "";
+    const contenedor = document.getElementById("tarjetasVehiculos");
+    contenedor.innerHTML = "";
 
     if (vehiculos.length === 0) {
-        const fila = document.createElement("tr");
-        fila.innerHTML = `<td colspan="8" class="sin-resultados mensaje-tabla">No hay veh&iacute;culos para esa matr&iacute;cula</td>`;
-        tabla.appendChild(fila);
+        contenedor.innerHTML = `<div class="sin-resultados tarjeta-vacia">No hay veh&iacute;culos para este filtro</div>`;
         return;
     }
 
     vehiculos.forEach(v => {
         const diasItv = calcularDiasItv(v.fechaProximaItv);
-        const fila = document.createElement("tr");
+        const tarjeta = document.createElement("button");
 
-        fila.innerHTML = `
-            <td data-label="Matr&iacute;cula" class="matricula">${v.matricula}</td>
-            <td data-label="Veh&iacute;culo">${v.marca || "-"} ${v.modelo || ""}</td>
-            <td data-label="&Uacute;ltima ITV">${formatearFecha(v.fechaUltimaItv)}</td>
-            <td data-label="Pr&oacute;xima ITV">${formatearFecha(v.fechaProximaItv)}</td>
-            <td data-label="D&iacute;as restantes" class="${diasItv.clase}">${diasItv.texto}</td>
-            <td data-label="Estado"><span class="estado ${diasItv.clase}">${diasItv.estado}</span></td>
-            <td data-label="Documento">${crearEnlaceDocumento(v)}</td>
-            <td data-label="Acciones">
-                <div class="acciones-tabla">
-                    <button type="button" class="btn pasar-itv btn-pasar-itv">
-                        <img src="assets/itv.png" alt="" class="icono-boton">
-                        Pasar ITV
-                    </button>
-                    <button type="button" class="btn editar btn-editar">
-                        <img src="assets/editar.png" alt="" class="icono-boton">
-                        Editar
-                    </button>
-                    <button type="button" class="btn peligro btn-borrar">
-                        <img src="assets/eliminar.png" alt="" class="icono-boton">
-                        Borrar
-                    </button>
-                </div>
-            </td>
+        tarjeta.type = "button";
+        tarjeta.className = `tarjeta-vehiculo ${diasItv.clase}`;
+        tarjeta.innerHTML = `
+            <span class="matricula">${v.matricula}</span>
+            <span class="modelo-tarjeta">${v.marca || ""} ${v.modelo || "-"}</span>
+            <span class="estado ${diasItv.clase}">${diasItv.estado}</span>
         `;
 
-        fila.querySelector(".btn-pasar-itv").addEventListener("click", () => abrirModalPasarItv(v));
-        fila.querySelector(".btn-editar").addEventListener("click", () => editarVehiculo(v));
-        fila.querySelector(".btn-borrar").addEventListener("click", () => borrarVehiculo(v));
-        tabla.appendChild(fila);
-
-        const filaHistorial = document.createElement("tr");
-        filaHistorial.classList.add("fila-historial");
-        filaHistorial.innerHTML = `
-            <td class="historial-celda" colspan="8">
-                ${crearHistorialItv(v.historialItv)}
-            </td>
-        `;
-        tabla.appendChild(filaHistorial);
+        tarjeta.addEventListener("click", () => abrirDetalleVehiculo(v));
+        contenedor.appendChild(tarjeta);
     });
 }
 
 function mostrarMensajeTabla(mensaje) {
-    const tabla = document.getElementById("tablaVehiculos");
-    const fila = document.createElement("tr");
-
-    tabla.innerHTML = "";
-    fila.innerHTML = `<td colspan="8" class="sin-resultados mensaje-tabla">${mensaje}</td>`;
-    tabla.appendChild(fila);
+    document.getElementById("tarjetasVehiculos").innerHTML = `<div class="sin-resultados tarjeta-vacia">${mensaje}</div>`;
 }
 
 function actualizarResumen() {
@@ -196,12 +170,43 @@ function actualizarResumen() {
 function filtrarVehiculosPorMatricula() {
     const busqueda = normalizarMatricula(document.getElementById("buscarMatricula").value);
     const btnLimpiarBusqueda = document.getElementById("btnLimpiarBusqueda");
+    const vehiculosPorEstado = filtrarPorResumen(vehiculosCargados);
     const vehiculosFiltrados = busqueda
-        ? vehiculosCargados.filter(v => normalizarMatricula(v.matricula).includes(busqueda))
-        : vehiculosCargados;
+        ? vehiculosPorEstado.filter(v => normalizarMatricula(v.matricula).includes(busqueda))
+        : vehiculosPorEstado;
 
     btnLimpiarBusqueda.classList.toggle("oculto", !busqueda);
     mostrarVehiculos(vehiculosFiltrados);
+}
+
+function filtrarPorResumen(vehiculos) {
+    if (filtroResumenActivo === "total") {
+        return vehiculos;
+    }
+
+    return vehiculos.filter(v => {
+        const diasItv = calcularDiasItv(v.fechaProximaItv);
+
+        if (filtroResumenActivo === "caducada") {
+            return diasItv.estado === "Caducada";
+        }
+
+        if (filtroResumenActivo === "correcta") {
+            return diasItv.estado === "Correcta";
+        }
+
+        return diasItv.estado !== "Caducada" && diasItv.estado !== "Correcta";
+    });
+}
+
+function aplicarFiltroResumen(filtro) {
+    filtroResumenActivo = filtro;
+
+    document.querySelectorAll(".tarjeta-resumen[data-filtro]").forEach(tarjeta => {
+        tarjeta.classList.toggle("filtro-activo", tarjeta.dataset.filtro === filtro);
+    });
+
+    filtrarVehiculosPorMatricula();
 }
 
 function limpiarBusqueda() {
@@ -313,6 +318,71 @@ function crearHistorialItv(historial) {
             <ul>${elementos}</ul>
         </div>
     `;
+}
+
+function abrirDetalleVehiculo(vehiculo) {
+    const diasItv = calcularDiasItv(vehiculo.fechaProximaItv);
+
+    document.getElementById("tituloDetalleVehiculo").textContent = vehiculo.matricula;
+    document.getElementById("subtituloDetalleVehiculo").textContent = `${vehiculo.marca || ""} ${vehiculo.modelo || ""}`.trim();
+    document.getElementById("contenidoDetalleVehiculo").innerHTML = `
+        <div class="detalle-grid">
+            <div>
+                <span class="detalle-label">&Uacute;ltima ITV</span>
+                <strong>${formatearFecha(vehiculo.fechaUltimaItv)}</strong>
+            </div>
+            <div>
+                <span class="detalle-label">Pr&oacute;xima ITV</span>
+                <strong>${formatearFecha(vehiculo.fechaProximaItv)}</strong>
+            </div>
+            <div>
+                <span class="detalle-label">D&iacute;as restantes</span>
+                <strong class="${diasItv.clase}">${diasItv.texto}</strong>
+            </div>
+            <div>
+                <span class="detalle-label">Estado</span>
+                <span class="estado ${diasItv.clase}">${diasItv.estado}</span>
+            </div>
+            <div>
+                <span class="detalle-label">Documento ITV</span>
+                <strong>${crearEnlaceDocumento(vehiculo)}</strong>
+            </div>
+        </div>
+        <div class="acciones-detalle">
+            <button type="button" class="btn pasar-itv" id="btnDetallePasarItv">
+                <img src="assets/itv.png" alt="" class="icono-boton">
+                Pasar ITV
+            </button>
+            <button type="button" class="btn editar" id="btnDetalleEditar">
+                <img src="assets/editar.png" alt="" class="icono-boton">
+                Editar
+            </button>
+            <button type="button" class="btn peligro" id="btnDetalleBorrar">
+                <img src="assets/eliminar.png" alt="" class="icono-boton">
+                Borrar
+            </button>
+        </div>
+        ${crearHistorialItv(vehiculo.historialItv)}
+    `;
+
+    document.getElementById("btnDetallePasarItv").addEventListener("click", () => {
+        cerrarDetalleVehiculo();
+        abrirModalPasarItv(vehiculo);
+    });
+    document.getElementById("btnDetalleEditar").addEventListener("click", () => {
+        cerrarDetalleVehiculo();
+        editarVehiculo(vehiculo);
+    });
+    document.getElementById("btnDetalleBorrar").addEventListener("click", () => {
+        cerrarDetalleVehiculo();
+        borrarVehiculo(vehiculo);
+    });
+
+    document.getElementById("modalDetalleVehiculo").classList.remove("oculto");
+}
+
+function cerrarDetalleVehiculo() {
+    document.getElementById("modalDetalleVehiculo").classList.add("oculto");
 }
 
 function editarVehiculo(vehiculo) {
