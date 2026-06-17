@@ -81,6 +81,7 @@ registrarEvento("btnBuscarMatricula", "click", filtrarVehiculosPorMatricula);
 registrarEvento("btnLimpiarBusqueda", "click", limpiarBusqueda);
 registrarEvento("documentoItv", "change", actualizarNombreDocumento);
 registrarEvento("fotoVehiculo", "change", actualizarNombreFoto);
+registrarEvento("fotoPasarItv", "change", actualizarNombreFotoPasarItv);
 registrarEvento("btnCerrarPasarItv", "click", cerrarModalPasarItv);
 registrarEvento("btnCerrarDetalleVehiculo", "click", cerrarDetalleVehiculo);
 document.querySelectorAll(".tarjeta-resumen[data-filtro]").forEach(tarjeta => {
@@ -450,6 +451,8 @@ function abrirModalPasarItv(vehiculo) {
     document.getElementById("matriculaPasarItv").textContent = `${vehiculo.matricula} - ${vehiculo.marca || ""} ${vehiculo.modelo || ""}`.trim();
     document.getElementById("fechaPasarItv").value = new Date().toISOString().slice(0, 10);
     document.getElementById("fechaSiguienteItv").value = vehiculo.fechaProximaItv || "";
+    document.getElementById("fotoPasarItv").value = "";
+    actualizarNombreFotoPasarItv();
     document.getElementById("modalPasarItv").classList.remove("oculto");
     document.getElementById("fechaPasarItv").focus();
 }
@@ -457,6 +460,7 @@ function abrirModalPasarItv(vehiculo) {
 function cerrarModalPasarItv() {
     vehiculoPasandoItvId = null;
     document.getElementById("formPasarItv").reset();
+    actualizarNombreFotoPasarItv();
     document.getElementById("modalPasarItv").classList.add("oculto");
 }
 
@@ -477,6 +481,7 @@ async function guardarPasoItv(e) {
         fechaUltimaItv: document.getElementById("fechaPasarItv").value,
         fechaProximaItv: document.getElementById("fechaSiguienteItv").value
     };
+    const fotoItv = document.getElementById("fotoPasarItv").files[0];
 
     const respuesta = await fetch(`${API_URL}/${vehiculo.id}`, {
         method: "PUT",
@@ -489,6 +494,14 @@ async function guardarPasoItv(e) {
     if (!respuesta.ok) {
         alert(await obtenerMensajeError(respuesta));
         return;
+    }
+
+    if (fotoItv) {
+        const fotoSubida = await subirDocumentoItv(vehiculo.id, fotoItv);
+
+        if (!fotoSubida) {
+            return;
+        }
     }
 
     cerrarModalPasarItv();
@@ -505,6 +518,13 @@ function actualizarNombreDocumento() {
 function actualizarNombreFoto() {
     const foto = document.getElementById("fotoVehiculo").files[0];
     document.getElementById("nombreFotoVehiculo").textContent = foto
+        ? foto.name
+        : "Ninguna foto seleccionada";
+}
+
+function actualizarNombreFotoPasarItv() {
+    const foto = document.getElementById("fotoPasarItv").files[0];
+    document.getElementById("nombreFotoPasarItv").textContent = foto
         ? foto.name
         : "Ninguna foto seleccionada";
 }
