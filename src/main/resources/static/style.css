@@ -422,9 +422,14 @@ input:focus {
 }
 
 .enlace-documento {
+    border: 0;
+    padding: 0;
     color: var(--primario);
+    background: transparent;
+    font: inherit;
     font-weight: 800;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .enlace-documento:hover {
@@ -556,6 +561,10 @@ input:focus {
     width: min(720px, 100%);
 }
 
+.modal-documento {
+    width: min(1000px, 100%);
+}
+
 .detalle-cabecera {
     display: flex;
     justify-content: space-between;
@@ -600,6 +609,30 @@ input:focus {
     flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 16px;
+}
+
+.visor-documento {
+    display: grid;
+    place-items: center;
+    min-height: min(72vh, 720px);
+    overflow: hidden;
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.documento-frame {
+    width: 100%;
+    height: min(72vh, 720px);
+    border: 0;
+    background: #ffffff;
+}
+
+.documento-imagen {
+    display: block;
+    max-width: 100%;
+    max-height: min(72vh, 720px);
+    object-fit: contain;
 }
 
 .formulario-modal {

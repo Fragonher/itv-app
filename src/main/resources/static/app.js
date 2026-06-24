@@ -84,6 +84,7 @@ registrarEvento("fotoVehiculo", "change", actualizarNombreFoto);
 registrarEvento("fotoPasarItv", "change", actualizarNombreFotoPasarItv);
 registrarEvento("btnCerrarPasarItv", "click", cerrarModalPasarItv);
 registrarEvento("btnCerrarDetalleVehiculo", "click", cerrarDetalleVehiculo);
+registrarEvento("btnCerrarDocumentoItv", "click", cerrarDocumentoItv);
 document.querySelectorAll(".tarjeta-resumen[data-filtro]").forEach(tarjeta => {
     tarjeta.addEventListener("click", () => aplicarFiltroResumen(tarjeta.dataset.filtro));
 });
@@ -95,6 +96,11 @@ document.getElementById("modalPasarItv").addEventListener("click", function (e) 
 document.getElementById("modalDetalleVehiculo").addEventListener("click", function (e) {
     if (e.target === this) {
         cerrarDetalleVehiculo();
+    }
+});
+document.getElementById("modalDocumentoItv").addEventListener("click", function (e) {
+    if (e.target === this) {
+        cerrarDocumentoItv();
     }
 });
 document.getElementById("formPasarItv").addEventListener("submit", guardarPasoItv);
@@ -313,7 +319,7 @@ function crearEnlaceDocumento(vehiculo) {
         return "<span class=\"texto-suave\">Sin documento</span>";
     }
 
-    return `<a class="enlace-documento" href="${API_URL}/${vehiculo.id}/documento" target="_blank" rel="noopener">Ver documento</a>`;
+    return `<button type="button" class="enlace-documento" id="btnVerDocumentoItv">Ver documento</button>`;
 }
 
 function crearFotoVehiculo(vehiculo) {
@@ -404,12 +410,33 @@ function abrirDetalleVehiculo(vehiculo) {
         cerrarDetalleVehiculo();
         borrarVehiculo(vehiculo);
     });
+    document.getElementById("btnVerDocumentoItv")?.addEventListener("click", () => abrirDocumentoItv(vehiculo));
 
     document.getElementById("modalDetalleVehiculo").classList.remove("oculto");
 }
 
 function cerrarDetalleVehiculo() {
     document.getElementById("modalDetalleVehiculo").classList.add("oculto");
+}
+
+function abrirDocumentoItv(vehiculo) {
+    const urlDocumento = `${API_URL}/${vehiculo.id}/documento`;
+    const visor = document.getElementById("visorDocumentoItv");
+
+    document.getElementById("tituloDocumentoItv").textContent = vehiculo.documentoItvNombre || vehiculo.matricula;
+
+    if (vehiculo.documentoItvTipo && vehiculo.documentoItvTipo.startsWith("image/")) {
+        visor.innerHTML = `<img class="documento-imagen" src="${urlDocumento}" alt="Documento ITV de ${vehiculo.matricula}">`;
+    } else {
+        visor.innerHTML = `<iframe class="documento-frame" src="${urlDocumento}" title="Documento ITV de ${vehiculo.matricula}"></iframe>`;
+    }
+
+    document.getElementById("modalDocumentoItv").classList.remove("oculto");
+}
+
+function cerrarDocumentoItv() {
+    document.getElementById("modalDocumentoItv").classList.add("oculto");
+    document.getElementById("visorDocumentoItv").innerHTML = "";
 }
 
 function editarVehiculo(vehiculo) {
