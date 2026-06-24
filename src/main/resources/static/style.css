@@ -271,14 +271,14 @@ input:focus {
 }
 
 .btn.cerrar-modal {
-    color: var(--primario);
-    background: #e6f4f1;
-    border: 1px solid rgba(15, 118, 110, 0.28);
+    color: var(--peligro);
+    background: var(--peligro-fondo);
+    border: 1px solid rgba(220, 38, 38, 0.28);
 }
 
 .btn.cerrar-modal:hover {
     color: #ffffff;
-    background: var(--primario);
+    background: var(--peligro);
 }
 
 .btn.fantasma {
